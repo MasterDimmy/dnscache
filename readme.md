@@ -3,7 +3,8 @@ CGO is used to lookup domain names. Given enough concurrent requests and the sli
 
 The issue is documented at <https://code.google.com/p/go/issues/detail?id=5625>
 
-The Go team's singleflight solution (which isn't in stable yet) is rather elegant. However, it only eliminates concurrent lookups (thundering herd problems). Many systems can live with slightly stale resolve names, which means we can cacne DNS lookups and refresh them in the background.
+The Go team's singleflight solution (which isn't in stable yet) is rather elegant. However, it only eliminates concurrent lookups (thundering herd problems).
+Many systems can live with slightly stale resolve names, which means we can cacne DNS lookups and refresh them in the background.
 
 ### Installation
 Install using the "go get" command:
@@ -28,11 +29,13 @@ The cache is thread safe. Create a new instance by specifying how long each entr
 If you are using an `http.Transport`, you can use this cache by speficifying a
 `Dial` function:
 
+    reolsver := dnscache.New(time.Minute * 5) //if -1, no update
+
     transport := &http.Transport {
       MaxIdleConnsPerHost: 64,
       Dial: func(network string, address string) (net.Conn, error) {
         separator := strings.LastIndex(address, ":")
-        ip, _ := dnscache.FetchString(address[:separator])
+        ip, _ := resolver.FetchString(address[:separator])
         return net.Dial("tcp", ip + address[separator:])
       },
     }
