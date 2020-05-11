@@ -79,10 +79,8 @@ func (r *Resolver) Lookup(address string) ([]net.IP, error) {
 }
 
 func (r *Resolver) autoRefresh(rate time.Duration) {
-	if rate < 0 { //resolver is off
-		for {
-			time.Sleep(rate)
-			r.Refresh()
-		}
+	for {
+		time.Sleep(rate)
+		r.Refresh()
 	}
 }
